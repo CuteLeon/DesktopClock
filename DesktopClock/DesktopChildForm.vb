@@ -27,7 +27,7 @@ Public Class DesktopChildForm
         DrawImage(Me, CreateTimeBitmap(GetTimeString()))
         '开机自启
         Dim RegStartUp As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Microsoft\Windows\CurrentVersion\Run")
-        'RegStartUp.SetValue("Desktop Clock", Application.ExecutablePath)
+        RegStartUp.SetValue("Desktop Clock", Application.ExecutablePath)
         'RegStartUp.DeleteValue("Desktop Clock")'删除开机启动项
     End Sub
 
