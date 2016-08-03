@@ -184,6 +184,18 @@
   <data name="Month_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Month_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Noon_AM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\noon_am.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Noon_AM1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Noon_AM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Noon_PM" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>resources\noon_pm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Noon_PM1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Noon_PM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Time_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Time_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -215,7 +227,10 @@
     <value>Resources\Time_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Time_C" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\Time_#.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>resources\time_c.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="UI_Tray" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\UI_Tray.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Week_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Week_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

@@ -287,6 +287,46 @@ Namespace My.Resources
         '''<summary>
         '''  查找 System.Drawing.Bitmap 类型的本地化资源。
         '''</summary>
+        Friend Shared ReadOnly Property Noon_AM() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Noon_AM", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
+        '''</summary>
+        Friend Shared ReadOnly Property Noon_AM1() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Noon_AM1", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
+        '''</summary>
+        Friend Shared ReadOnly Property Noon_PM() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Noon_PM", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
+        '''</summary>
+        Friend Shared ReadOnly Property Noon_PM1() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Noon_PM1", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
+        '''</summary>
         Friend Shared ReadOnly Property Time_0() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Time_0", resourceCulture)
@@ -390,6 +430,16 @@ Namespace My.Resources
         Friend Shared ReadOnly Property Time_C() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Time_C", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
+        '''</summary>
+        Friend Shared ReadOnly Property UI_Tray() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("UI_Tray", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

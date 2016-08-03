@@ -183,10 +183,7 @@
     <None Include="Resources\Time_9.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Time_Colon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Time_#.png" />
+    <None Include="Resources\Time_C.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Week_1.png" />
@@ -277,6 +274,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DesktopClock.ico" />
+    <None Include="Resources\UI_Tray.png" />
+    <None Include="Resources\Noon_PM.png" />
+    <None Include="Resources\Noon_AM.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
