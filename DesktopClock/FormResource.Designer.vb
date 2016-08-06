@@ -447,6 +447,16 @@ Namespace My.Resources
         '''<summary>
         '''  查找 System.Drawing.Bitmap 类型的本地化资源。
         '''</summary>
+        Friend Shared ReadOnly Property Week_0() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Week_0", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
+        '''</summary>
         Friend Shared ReadOnly Property Week_1() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Week_1", resourceCulture)
@@ -500,16 +510,6 @@ Namespace My.Resources
         Friend Shared ReadOnly Property Week_6() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Week_6", resourceCulture)
-                Return CType(obj,System.Drawing.Bitmap)
-            End Get
-        End Property
-        
-        '''<summary>
-        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
-        '''</summary>
-        Friend Shared ReadOnly Property Week_7() As System.Drawing.Bitmap
-            Get
-                Dim obj As Object = ResourceManager.GetObject("Week_7", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
