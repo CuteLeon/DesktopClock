@@ -100,8 +100,8 @@ Public Class DesktopChildForm
     ''' 产生时间参数
     ''' </summary>
     ''' <param name="Use24TimeFormat">是否使用24小时计时制</param>
-    ''' <returns>时间参数</returns>
-    Private Function GetTimeString() As String
+    ''' <returns>时间参数（格式：小时C分钟日期）</returns>
+    Private Function GetTimeString(Optional ByVal Use24TimeFormat As Boolean = False) As String
         Return Now.ToString(IIf(Use24TimeFormat, "HH", "hh") & "Cmmdd")
     End Function
 
