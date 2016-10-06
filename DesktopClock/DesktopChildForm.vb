@@ -4,6 +4,9 @@ Imports System.Threading
 Public Class DesktopChildForm
     '将窗体嵌入桌面
     Private Declare Function SetParent Lib "user32" Alias "SetParent" (ByVal hWndChild As IntPtr, ByVal hWndNewParent As IntPtr) As Integer
+    '判断一个窗口句柄是否有效
+    Private Declare Function IsWindow Lib "user32" Alias "IsWindow" (ByVal hWnd As IntPtr) As Integer
+
     Dim IntervalDistance As Size = New Size(100, 500) '窗体距离屏幕右下角的距离
     Dim BitmapSize As Size = New Size(800, 420) '位图尺寸
     Dim FormSize As Size = New Size(400, 210) '窗体显示尺寸（只需要修改这个就可以拉伸数字时钟）
@@ -13,6 +16,7 @@ Public Class DesktopChildForm
     Dim NoonBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Noon_" & IIf(Now.Hour > 11, "PM", "AM"))
     Dim TrayBitmap As Bitmap = My.Resources.FormResource.UI_Tray
     Dim Use24TimeFormat As Boolean = False '是否使用24小时计时制
+    Dim DesktopIconHandle As IntPtr = GetDesktopIconHandle()
 
     Private Sub DesktopChildForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '调整窗体的尺寸和位置
@@ -22,13 +26,13 @@ Public Class DesktopChildForm
         '监听外部修改系统时间和日期
         AddHandler SystemEvents.TimeChanged, AddressOf UserChangeTime
         '将窗体设置为桌面图标容器的子窗体，以置后显示
-        SetParent(Me.Handle, GetDesktopIconHandle)
+        SetParent(Me.Handle, DesktopIconHandle)
         '启动时初始化界面
         DrawImage(Me, CreateTimeBitmap(GetTimeString()))
         '开机自启
         Dim RegStartUp As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Microsoft\Windows\CurrentVersion\Run")
         RegStartUp.SetValue("Desktop Clock", Application.ExecutablePath)
-        'RegStartUp.DeleteValue("Desktop Clock")'删除开机启动项
+        'RegStartUp.DeleteValue("Desktop Clock") '删除开机启动项
     End Sub
 
     Private Sub UserChangeTime()
@@ -42,6 +46,17 @@ Public Class DesktopChildForm
     End Sub
 
     Private Sub TimerEngine_Tick(sender As Object, e As EventArgs) Handles TimerEngine.Tick
+        If IsWindow(DesktopIconHandle) = False Then
+            '桌面句柄被销毁，需要重新查找桌面句柄
+            Me.Hide() '暂时隐藏
+            DesktopIconHandle = GetDesktopIconHandle()
+            If DesktopIconHandle = 0 Then Exit Sub '未找到时退出过程，等待下次查找
+            SetParent(Me.Handle, DesktopIconHandle)
+            '调整窗体的尺寸和位置
+            Me.Left = (My.Computer.Screen.Bounds.Width - Me.Width) - IntervalDistance.Width
+            Me.Top = (My.Computer.Screen.Bounds.Height - Me.Height) - IntervalDistance.Height
+            Me.Show() '重新显示
+        End If
         If Now.Minute = LastMinute Then Exit Sub
         LastMinute = Now.Minute '分钟数改变了，记录当前分钟数
         If LastMinute = 0 Then '每小时检查一次 上下午、星期和月份
