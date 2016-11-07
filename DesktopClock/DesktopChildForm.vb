@@ -7,7 +7,7 @@ Public Class DesktopChildForm
     '判断一个窗口句柄是否有效
     Private Declare Function IsWindow Lib "user32" Alias "IsWindow" (ByVal hWnd As IntPtr) As Integer
 
-    Dim IntervalDistance As Size = New Size(100, 500) '窗体距离屏幕右下角的距离
+    Dim IntervalDistance As Size = New Size(30, 50) '窗体距离屏幕右上角的距离
     Dim BitmapSize As Size = New Size(800, 420) '位图尺寸
     Dim FormSize As Size = New Size(400, 210) '窗体显示尺寸（只需要修改这个就可以拉伸数字时钟）
     Dim LastMinute As Byte = Now.Minute '上一次记录的分钟数，屏蔽掉无用的工作量
@@ -21,8 +21,8 @@ Public Class DesktopChildForm
     Private Sub DesktopChildForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '调整窗体的尺寸和位置
         Me.Size = FormSize
-        Me.Left = (My.Computer.Screen.Bounds.Width - Me.Width) - IntervalDistance.Width
-        Me.Top = (My.Computer.Screen.Bounds.Height - Me.Height) - IntervalDistance.Height
+        Me.Left = My.Computer.Screen.Bounds.Width - Me.Width - IntervalDistance.Width
+        Me.Top = IntervalDistance.Height
         '监听外部修改系统时间和日期
         AddHandler SystemEvents.TimeChanged, AddressOf UserChangeTime
         '将窗体设置为桌面图标容器的子窗体，以置后显示
@@ -53,8 +53,8 @@ Public Class DesktopChildForm
             If DesktopIconHandle = 0 Then Exit Sub '未找到时退出过程，等待下次查找
             SetParent(Me.Handle, DesktopIconHandle)
             '调整窗体的尺寸和位置
-            Me.Left = (My.Computer.Screen.Bounds.Width - Me.Width) - IntervalDistance.Width
-            Me.Top = (My.Computer.Screen.Bounds.Height - Me.Height) - IntervalDistance.Height
+            Me.Left = My.Computer.Screen.Bounds.Width - Me.Width - IntervalDistance.Width
+            Me.Top = IntervalDistance.Height
             Me.Show() '重新显示
         End If
         If Now.Minute = LastMinute Then Exit Sub
