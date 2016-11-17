@@ -56,6 +56,8 @@ Public Class DesktopChildForm
             Me.Left = My.Computer.Screen.Bounds.Width - Me.Width - IntervalDistance.Width
             Me.Top = IntervalDistance.Height
             Me.Show() '重新显示
+            'Explorer进程恢复后需要重新刷新界面
+            UserChangeTime()
         End If
         If Now.Minute = LastMinute Then Exit Sub
         LastMinute = Now.Minute '分钟数改变了，记录当前分钟数
