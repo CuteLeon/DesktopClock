@@ -274,6 +274,18 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DesktopClock.ico" />
+    <None Include="Resources\DefaultWeather.png" />
+    <None Include="Resources\Centigrade.png" />
+    <None Include="Resources\Temperature_9.png" />
+    <None Include="Resources\Temperature_8.png" />
+    <None Include="Resources\Temperature_7.png" />
+    <None Include="Resources\Temperature_6.png" />
+    <None Include="Resources\Temperature_5.png" />
+    <None Include="Resources\Temperature_4.png" />
+    <None Include="Resources\Temperature_3.png" />
+    <None Include="Resources\Temperature_2.png" />
+    <None Include="Resources\Temperature_1.png" />
+    <None Include="Resources\Temperature_0.png" />
     <None Include="Resources\UI_Tray.png" />
     <None Include="Resources\Noon_PM.png" />
     <None Include="Resources\Noon_AM.png" />

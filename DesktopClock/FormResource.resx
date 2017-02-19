@@ -118,6 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="Centigrade" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Centigrade.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Date_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Date_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -147,6 +150,9 @@
   </data>
   <data name="Date_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Date_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="DefaultWeather" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\DefaultWeather.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Month_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Month_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -195,6 +201,36 @@
   </data>
   <data name="Noon_PM1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Noon_PM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_6" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_6.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_8" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_8.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Temperature_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Temperature_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Time_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Time_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

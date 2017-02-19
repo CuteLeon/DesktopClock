@@ -1,5 +1,7 @@
 ﻿Imports Microsoft.Win32
 Imports System.Threading
+Imports System.Net
+Imports System.ComponentModel
 
 Public Class DesktopChildForm
     '将窗体嵌入桌面
@@ -7,18 +9,20 @@ Public Class DesktopChildForm
     '判断一个窗口句柄是否有效
     Private Declare Function IsWindow Lib "user32" Alias "IsWindow" (ByVal hWnd As IntPtr) As Integer
 
+    Private Const Use24TimeFormat As Boolean = True  '是否使用24小时计时制
+    Dim DefaultCityKey As String = "101180101" '默认城市ID（郑州市）
     Dim IntervalDistance As Size = New Size(30, 50) '窗体距离屏幕右上角的距离
     Dim BitmapSize As Size = New Size(800, 420) '位图尺寸
-    Dim FormSize As Size = New Size(400, 210) '窗体显示尺寸（只需要修改这个就可以拉伸数字时钟）
+    Dim FormSize As Size = New Size(BitmapSize.Width * (683 / My.Computer.Screen.Bounds.Width), BitmapSize.Height * (384 / My.Computer.Screen.Bounds.Height)) '实际显示尺寸（根据屏幕分辨率调整）
     Dim LastMinute As Byte = Now.Minute '上一次记录的分钟数，屏蔽掉无用的工作量
-    Dim WeekBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Week_" & Now.DayOfWeek)
-    Dim MonthBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Month_" & Now.Month)
-    Dim NoonBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Noon_" & IIf(Now.Hour > 11, "PM", "AM"))
-    Dim TrayBitmap As Bitmap = My.Resources.FormResource.UI_Tray
-    Dim Use24TimeFormat As Boolean = False '是否使用24小时计时制
+    Dim MonthBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Month_" & Now.Month) '月份图
+    Dim WeekBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Week_" & Now.DayOfWeek) '星期图
+    Dim NoonBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Noon_" & IIf(Now.Hour > 11, "PM", "AM")) '上下午图
+    Dim WeatherBitmap As Bitmap = My.Resources.FormResource.DefaultWeather  '天气图
     Dim DesktopIconHandle As IntPtr = GetDesktopIconHandle()
 
     Private Sub DesktopChildForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = False
         '调整窗体的尺寸和位置
         Me.Size = FormSize
         Me.Left = My.Computer.Screen.Bounds.Width - Me.Width - IntervalDistance.Width
@@ -33,6 +37,8 @@ Public Class DesktopChildForm
         Dim RegStartUp As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Microsoft\Windows\CurrentVersion\Run")
         RegStartUp.SetValue("Desktop Clock", Application.ExecutablePath)
         'RegStartUp.DeleteValue("Desktop Clock") '删除开机启动项
+
+        GetWeather()
     End Sub
 
     Private Sub UserChangeTime()
@@ -61,10 +67,11 @@ Public Class DesktopChildForm
         End If
         If Now.Minute = LastMinute Then Exit Sub
         LastMinute = Now.Minute '分钟数改变了，记录当前分钟数
-        If LastMinute = 0 Then '每小时检查一次 上下午、星期和月份
+        If LastMinute = 0 Then '每小时检查一次 上下午、星期和月份，刷新一次当前气温
             WeekBitmap = My.Resources.FormResource.ResourceManager.GetObject("Week_" & Now.DayOfWeek)
             MonthBitmap = My.Resources.FormResource.ResourceManager.GetObject("Month_" & Now.Month)
             NoonBitmap = My.Resources.FormResource.ResourceManager.GetObject("Noon_" & IIf(Now.Hour > 11, "PM", "AM"))
+            GetWeather()
         End If
         DrawImage(Me, CreateTimeBitmap(GetTimeString()))
         GC.Collect()
@@ -79,46 +86,102 @@ Public Class DesktopChildForm
     ''' <returns>返回根据时间创建的图像</returns>
     Private Function CreateTimeBitmap(ByVal TimeString As String) As Bitmap
         Dim TimeBitmap As Bitmap = New Bitmap(BitmapSize.Width, BitmapSize.Height)
-        Dim TimeGraphics As Graphics = Graphics.FromImage(TimeBitmap)
-        Dim TempChar As Char = vbNullChar '提取自参数的单个字符
-        Dim GraphicsLocationX As Integer = 190 '绘制单个数字的坐标记录
-        Dim NumberBitmap As Bitmap = Nothing '单个数字图像
-        '得到星期和月份图像
-        Dim Index As Integer '字符串内循环因子
-        For Index = 1 To 5 '提取时间（前5个字符）
-            TempChar = Strings.Mid(TimeString, Index, 1)
-            NumberBitmap = My.Resources.FormResource.ResourceManager.GetObject("Time_" & TempChar)
-            TimeGraphics.DrawImage(NumberBitmap, GraphicsLocationX, 0, NumberBitmap.Width, NumberBitmap.Height)
-            GraphicsLocationX += NumberBitmap.Width '记录下次绘制的坐标
-        Next
-        '绘制上下午、星期和月份图像和分割线
-        TimeGraphics.DrawImage(NoonBitmap, 0, 99, 190, 105)
-        TimeGraphics.DrawImage(TrayBitmap, 215, 215, 560, 20)
-        TimeGraphics.DrawImage(WeekBitmap, 608 - WeekBitmap.Width, 240, WeekBitmap.Width, 90)
-        TimeGraphics.DrawImage(MonthBitmap, 608 - MonthBitmap.Width, 330, MonthBitmap.Width, 80)
-        '绘制日期图像
-        GraphicsLocationX = 608
-        For Index = 6 To 7
-            TempChar = Strings.Mid(TimeString, Index, 1)
-            NumberBitmap = My.Resources.FormResource.ResourceManager.GetObject("Date_" & TempChar)
-            TimeGraphics.DrawImage(NumberBitmap, GraphicsLocationX, 248, 96, 162)
-            GraphicsLocationX += 96
-        Next
-        '释放不需要的内存
-        NumberBitmap.Dispose()
-        '根据窗体尺寸拉伸时间图像
-        TimeBitmap = New Bitmap(TimeBitmap, FormSize)
-        TimeGraphics.Dispose()
+        Using TimeGraphics As Graphics = Graphics.FromImage(TimeBitmap)
+            'TimeGraphics.FillRectangle(Brushes.White, 0, 0, 800, 410)
+            Dim GraphicsLocationX As Integer = 190 '绘制单个数字的坐标记录
+            Dim NumberBitmap As Bitmap = Nothing '单个数字图像
+            '得到星期和月份图像
+            Dim Index As Integer '字符串内循环因子
+            For Index = 0 To 4 '提取时间（前5个字符）
+                NumberBitmap = My.Resources.FormResource.ResourceManager.GetObject("Time_" & TimeString.Chars(Index))
+                'TimeGraphics.FillRectangle(Brushes.Orange, GraphicsLocationX, 0, NumberBitmap.Width, NumberBitmap.Height)
+                TimeGraphics.DrawImage(NumberBitmap, GraphicsLocationX, 0, NumberBitmap.Width, NumberBitmap.Height)
+                GraphicsLocationX += NumberBitmap.Width '记录下次绘制的坐标
+            Next
+            '绘制上下午、月份、星期和分割线
+            'TimeGraphics.FillRectangle(Brushes.Red, 0, 15, 190, 105)
+            TimeGraphics.DrawImage(NoonBitmap, 0, 15, 190, 105)
+
+            'TimeGraphics.FillRectangle(Brushes.Blue, 215, 215, 560, 20)
+            TimeGraphics.DrawImage(My.Resources.FormResource.UI_Tray, 215, 215, 560, 20)
+
+            'TimeGraphics.FillRectangle(Brushes.Yellow, 608 - MonthBitmap.Width, 240, MonthBitmap.Width, 86)
+            TimeGraphics.DrawImage(MonthBitmap, 608 - MonthBitmap.Width, 240, MonthBitmap.Width, 86)
+
+            'TimeGraphics.FillRectangle(Brushes.Pink, 608 - WeekBitmap.Width, 330, WeekBitmap.Width, 86)
+            TimeGraphics.DrawImage(WeekBitmap, 608 - WeekBitmap.Width, 330, WeekBitmap.Width, 86)
+            '绘制日期图像
+            GraphicsLocationX = 608
+            For Index = 5 To 6
+                NumberBitmap = My.Resources.FormResource.ResourceManager.GetObject("Date_" & TimeString.Chars(Index))
+                'TimeGraphics.FillRectangle(Brushes.Violet, GraphicsLocationX, 248, 96, 162)
+                TimeGraphics.DrawImage(NumberBitmap, GraphicsLocationX, 248, 96, 162)
+                GraphicsLocationX += 96
+            Next
+
+            'TimeGraphics.FillRectangle(Brushes.Navy, 0, 302, 250, 118)
+            TimeGraphics.DrawImage(WeatherBitmap, 0, 302, 250, 118)
+
+            '释放不需要的内存
+            NumberBitmap.Dispose()
+            '根据窗体尺寸拉伸时间图像
+            TimeBitmap = New Bitmap(TimeBitmap, FormSize)
+        End Using
         '返回创建的图像
         Return TimeBitmap
     End Function
+
+    ''' <summary>
+    ''' 更新天气信息
+    ''' </summary>
+    Private Sub GetWeather()
+        Try
+            If Not My.Computer.Network.Ping("www.weather.com.cn") Then  Exit Sub 
+        Catch ex As Exception
+            Exit Sub
+        End Try
+
+        Dim NowTemperature As String ', LowTemperature As String, HighTemperature As String, Weather As String
+        Dim NowTemperatureClient As WebClient = New WebClient With {.Encoding = System.Text.Encoding.UTF8}
+        AddHandler NowTemperatureClient.DownloadStringCompleted, Sub(sender1 As Object, e1 As DownloadStringCompletedEventArgs)
+                                                                     NowTemperature = (e1.Result.Split(""""))(13)
+                                                                     Debug.Print(NowTemperature)
+                                                                     'Dim WeatherClient As WebClient = New WebClient With {.Encoding = System.Text.Encoding.UTF8}
+                                                                     'AddHandler WeatherClient.DownloadStringCompleted, Sub(ender2 As Object, e2 As System.Net.DownloadStringCompletedEventArgs)
+                                                                     '                                                      Dim JsonStrings() As String = e2.Result.Split("""")
+                                                                     '                                                      LowTemperature = JsonStrings(13)
+                                                                     '                                                      HighTemperature = JsonStrings(17)
+                                                                     '                                                      Weather = JsonStrings(21)
+                                                                     Dim TempWeatherBitmap As Bitmap = New Bitmap(250, 118)
+                                                                     Using WeatherGraphics As Graphics = Graphics.FromImage(TempWeatherBitmap)
+                                                                         If NowTemperature.Length = 1 Then
+                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & NowTemperature), 40, 0, 80, 118)
+                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, 81, 0, 89, 89)
+                                                                         ElseIf NowTemperature.Length = 2 Then
+                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & NowTemperature.Chars(0)), 0, 0, 80, 118)
+                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & NowTemperature.Chars(1)), 80, 0, 80, 118)
+                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, 161, 0, 89, 89)
+                                                                         End If
+                                                                     End Using
+                                                                     WeatherBitmap = TempWeatherBitmap
+                                                                     Invoke(Sub()
+                                                                                DrawImage(Me, CreateTimeBitmap(GetTimeString()))
+                                                                            End Sub)
+
+                                                                     '                                                  End Sub
+                                                                     'WeatherClient.DownloadStringAsync(New Uri("http://www.weather.com.cn/data/cityinfo/" & DefaultCityKey & ".html"))
+                                                                 End Sub
+        NowTemperatureClient.DownloadStringAsync(New Uri("http://www.weather.com.cn/data/sk/" & DefaultCityKey & ".html"))
+    End Sub
+
+
 
     ''' <summary>
     ''' 产生时间参数
     ''' </summary>
     ''' <param name="Use24TimeFormat">是否使用24小时计时制</param>
     ''' <returns>时间参数（格式：小时C分钟日期）</returns>
-    Private Function GetTimeString(Optional ByVal Use24TimeFormat As Boolean = False) As String
+    Private Function GetTimeString(Optional ByVal Use24TimeFormat As Boolean = Use24TimeFormat) As String
         Return Now.ToString(IIf(Use24TimeFormat, "HH", "hh") & "Cmmdd")
     End Function
 
