@@ -2,6 +2,10 @@
 Imports System.Net
 
 Public Class DesktopChildForm
+    '条件编译指令
+#Const Debuging = False
+#Const ShowRectangle = False
+
     '将窗体嵌入桌面
     Private Declare Function SetParent Lib "user32" Alias "SetParent" (ByVal hWndChild As IntPtr, ByVal hWndNewParent As IntPtr) As Integer
     '判断一个窗口句柄是否有效
@@ -11,7 +15,7 @@ Public Class DesktopChildForm
     Dim DefaultCityKey As String = "101180101" '默认城市ID（郑州市）
     Dim IntervalDistance As Size = New Size(30, 50) '窗体距离屏幕右上角的距离
     Dim BitmapSize As Size = New Size(800, 420) '位图尺寸
-    Dim FormSize As Size = New Size(BitmapSize.Width * (683 / My.Computer.Screen.Bounds.Width), BitmapSize.Height * (384 / My.Computer.Screen.Bounds.Height)) '实际显示尺寸（根据屏幕分辨率调整）
+    Dim FormSize As Size = New Size(BitmapSize.Width * (My.Computer.Screen.Bounds.Width / 2732), BitmapSize.Height * (My.Computer.Screen.Bounds.Height / 1536)) '实际显示尺寸（根据屏幕分辨率调整）
     Dim LastMinute As Byte = Now.Minute '上一次记录的分钟数，屏蔽掉无用的工作量
     Dim MonthBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Month_" & Now.Month) '月份图
     Dim WeekBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Week_" & Now.DayOfWeek) '星期图
@@ -32,10 +36,12 @@ Public Class DesktopChildForm
         '启动时初始化界面
         DrawImage(Me, CreateTimeBitmap(GetTimeString()))
 
+#If Not Debuging Then
         '开机自启
         Dim RegStartUp As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Microsoft\Windows\CurrentVersion\Run")
         RegStartUp.SetValue("Desktop Clock", Application.ExecutablePath)
         'RegStartUp.DeleteValue("Desktop Clock") '删除开机启动项
+#End If
 
         GetWeather()
     End Sub
@@ -86,40 +92,56 @@ Public Class DesktopChildForm
     Private Function CreateTimeBitmap(ByVal TimeString As String) As Bitmap
         Dim TimeBitmap As Bitmap = New Bitmap(BitmapSize.Width, BitmapSize.Height)
         Using TimeGraphics As Graphics = Graphics.FromImage(TimeBitmap)
-            ''TimeGraphics.FillRectangle(Brushes.White, 0, 0, BitmapSize.Width, BitmapSize.Height)
+#If ShowRectangle Then
+            TimeGraphics.FillRectangle(Brushes.White, 0, 0, BitmapSize.Width, BitmapSize.Height)
+#End If
             Dim GraphicsLocationX As Integer = 190 '绘制单个数字的坐标记录
             Dim NumberBitmap As Bitmap = Nothing '单个数字图像
             '得到星期和月份图像
             Dim Index As Integer '字符串内循环因子
             For Index = 0 To 4 '提取时间（前5个字符）
                 NumberBitmap = My.Resources.FormResource.ResourceManager.GetObject("Time_" & TimeString.Chars(Index))
-                'TimeGraphics.FillRectangle(Brushes.Orange, GraphicsLocationX, 0, NumberBitmap.Width, NumberBitmap.Height)
+#If ShowRectangle Then
+                TimeGraphics.FillRectangle(Brushes.Orange, GraphicsLocationX, 0, NumberBitmap.Width, NumberBitmap.Height)
+#End If
                 TimeGraphics.DrawImage(NumberBitmap, GraphicsLocationX, 0, NumberBitmap.Width, NumberBitmap.Height)
                 GraphicsLocationX += NumberBitmap.Width '记录下次绘制的坐标
             Next
             '绘制上下午、月份、星期和分割线
-            'TimeGraphics.FillRectangle(Brushes.Red, 0, 15, 190, 105)
+#If ShowRectangle Then
+            TimeGraphics.FillRectangle(Brushes.Red, 0, 15, 190, 105)
+#End If
             TimeGraphics.DrawImage(NoonBitmap, 0, 15, 190, 105)
 
-            'TimeGraphics.FillRectangle(Brushes.Blue, 215, 215, 560, 20)
+#If ShowRectangle Then
+            TimeGraphics.FillRectangle(Brushes.Blue, 215, 215, 560, 20)
+#End If
             TimeGraphics.DrawImage(My.Resources.FormResource.UI_Tray, 215, 215, 560, 20)
 
-            'TimeGraphics.FillRectangle(Brushes.Yellow, 608 - MonthBitmap.Width, 240, MonthBitmap.Width, 86)
+#If ShowRectangle Then
+            TimeGraphics.FillRectangle(Brushes.Yellow, 608 - MonthBitmap.Width, 240, MonthBitmap.Width, 86)
+#End If
             TimeGraphics.DrawImage(MonthBitmap, 608 - MonthBitmap.Width, 240, MonthBitmap.Width, 86)
 
-            'TimeGraphics.FillRectangle(Brushes.Pink, 608 - WeekBitmap.Width, 330, WeekBitmap.Width, 86)
+#If ShowRectangle Then
+            TimeGraphics.FillRectangle(Brushes.Pink, 608 - WeekBitmap.Width, 330, WeekBitmap.Width, 86)
+#End If
             TimeGraphics.DrawImage(WeekBitmap, 608 - WeekBitmap.Width, 330, WeekBitmap.Width, 86)
             '绘制日期图像
             GraphicsLocationX = 608
             For Index = 5 To 6
                 NumberBitmap = My.Resources.FormResource.ResourceManager.GetObject("Date_" & TimeString.Chars(Index))
-                'TimeGraphics.FillRectangle(Brushes.Violet, GraphicsLocationX, 248, 96, 162)
+#If ShowRectangle Then
+                TimeGraphics.FillRectangle(Brushes.Violet, GraphicsLocationX, 248, 96, 162)
+#End If
                 TimeGraphics.DrawImage(NumberBitmap, GraphicsLocationX, 248, 96, 162)
                 GraphicsLocationX += 96
             Next
 
             If WeatherBitmap IsNot Nothing Then
-                'TimeGraphics.FillRectangle(Brushes.Navy, 0, 130, 311, 290)
+#If ShowRectangle Then
+                TimeGraphics.FillRectangle(Brushes.Navy, 0, 130, 311, 290)
+#End If
                 TimeGraphics.DrawImage(WeatherBitmap, 0, 130, 311, 290)
             End If
 
