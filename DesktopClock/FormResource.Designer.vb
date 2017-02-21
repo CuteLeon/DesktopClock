@@ -177,9 +177,9 @@ Namespace My.Resources
         '''<summary>
         '''  查找 System.Drawing.Bitmap 类型的本地化资源。
         '''</summary>
-        Friend Shared ReadOnly Property DefaultWeather() As System.Drawing.Bitmap
+        Friend Shared ReadOnly Property Minus() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("DefaultWeather", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("Minus", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property
@@ -440,6 +440,16 @@ Namespace My.Resources
         Friend Shared ReadOnly Property Temperature_9() As System.Drawing.Bitmap
             Get
                 Dim obj As Object = ResourceManager.GetObject("Temperature_9", resourceCulture)
+                Return CType(obj,System.Drawing.Bitmap)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  查找 System.Drawing.Bitmap 类型的本地化资源。
+        '''</summary>
+        Friend Shared ReadOnly Property Tilde() As System.Drawing.Bitmap
+            Get
+                Dim obj As Object = ResourceManager.GetObject("Tilde", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

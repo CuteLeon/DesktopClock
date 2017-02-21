@@ -151,8 +151,8 @@
   <data name="Date_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Date_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="DefaultWeather" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Resources\DefaultWeather.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Month_1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Month_1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -231,6 +231,9 @@
   </data>
   <data name="Temperature_9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Temperature_9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Tilde" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Tilde.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Time_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\Time_0.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

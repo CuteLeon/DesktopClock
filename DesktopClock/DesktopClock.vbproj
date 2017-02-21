@@ -274,6 +274,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DesktopClock.ico" />
+    <None Include="Resources\Tilde.png" />
+    <None Include="Resources\Minus.png" />
     <None Include="Resources\DefaultWeather.png" />
     <None Include="Resources\Centigrade.png" />
     <None Include="Resources\Temperature_9.png" />

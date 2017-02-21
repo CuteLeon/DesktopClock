@@ -1,7 +1,5 @@
 ﻿Imports Microsoft.Win32
-Imports System.Threading
 Imports System.Net
-Imports System.ComponentModel
 
 Public Class DesktopChildForm
     '将窗体嵌入桌面
@@ -18,7 +16,7 @@ Public Class DesktopChildForm
     Dim MonthBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Month_" & Now.Month) '月份图
     Dim WeekBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Week_" & Now.DayOfWeek) '星期图
     Dim NoonBitmap As Bitmap = My.Resources.FormResource.ResourceManager.GetObject("Noon_" & IIf(Now.Hour > 11, "PM", "AM")) '上下午图
-    Dim WeatherBitmap As Bitmap = My.Resources.FormResource.DefaultWeather  '天气图
+    Dim WeatherBitmap As Bitmap  '天气图
     Dim DesktopIconHandle As IntPtr = GetDesktopIconHandle()
 
     Private Sub DesktopChildForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -33,6 +31,7 @@ Public Class DesktopChildForm
         SetParent(Me.Handle, DesktopIconHandle)
         '启动时初始化界面
         DrawImage(Me, CreateTimeBitmap(GetTimeString()))
+
         '开机自启
         Dim RegStartUp As Microsoft.Win32.RegistryKey = My.Computer.Registry.CurrentUser.CreateSubKey("Software\Microsoft\Windows\CurrentVersion\Run")
         RegStartUp.SetValue("Desktop Clock", Application.ExecutablePath)
@@ -87,7 +86,7 @@ Public Class DesktopChildForm
     Private Function CreateTimeBitmap(ByVal TimeString As String) As Bitmap
         Dim TimeBitmap As Bitmap = New Bitmap(BitmapSize.Width, BitmapSize.Height)
         Using TimeGraphics As Graphics = Graphics.FromImage(TimeBitmap)
-            'TimeGraphics.FillRectangle(Brushes.White, 0, 0, 800, 410)
+            ''TimeGraphics.FillRectangle(Brushes.White, 0, 0, BitmapSize.Width, BitmapSize.Height)
             Dim GraphicsLocationX As Integer = 190 '绘制单个数字的坐标记录
             Dim NumberBitmap As Bitmap = Nothing '单个数字图像
             '得到星期和月份图像
@@ -119,8 +118,10 @@ Public Class DesktopChildForm
                 GraphicsLocationX += 96
             Next
 
-            'TimeGraphics.FillRectangle(Brushes.Navy, 0, 302, 250, 118)
-            TimeGraphics.DrawImage(WeatherBitmap, 0, 302, 250, 118)
+            If WeatherBitmap IsNot Nothing Then
+                'TimeGraphics.FillRectangle(Brushes.Navy, 0, 130, 311, 290)
+                TimeGraphics.DrawImage(WeatherBitmap, 0, 130, 311, 290)
+            End If
 
             '释放不需要的内存
             NumberBitmap.Dispose()
@@ -136,42 +137,102 @@ Public Class DesktopChildForm
     ''' </summary>
     Private Sub GetWeather()
         Try
-            If Not My.Computer.Network.Ping("www.weather.com.cn") Then  Exit Sub 
+            If Not My.Computer.Network.Ping("wthrcdn.etouch.cn") Then Exit Sub
         Catch ex As Exception
             Exit Sub
         End Try
 
-        Dim NowTemperature As String ', LowTemperature As String, HighTemperature As String, Weather As String
+        Dim NowTemperature As String, LowTemperature As String, HighTemperature As String, Weather As String
         Dim NowTemperatureClient As WebClient = New WebClient With {.Encoding = System.Text.Encoding.UTF8}
-        AddHandler NowTemperatureClient.DownloadStringCompleted, Sub(sender1 As Object, e1 As DownloadStringCompletedEventArgs)
-                                                                     NowTemperature = (e1.Result.Split(""""))(13)
-                                                                     Debug.Print(NowTemperature)
-                                                                     'Dim WeatherClient As WebClient = New WebClient With {.Encoding = System.Text.Encoding.UTF8}
-                                                                     'AddHandler WeatherClient.DownloadStringCompleted, Sub(ender2 As Object, e2 As System.Net.DownloadStringCompletedEventArgs)
-                                                                     '                                                      Dim JsonStrings() As String = e2.Result.Split("""")
-                                                                     '                                                      LowTemperature = JsonStrings(13)
-                                                                     '                                                      HighTemperature = JsonStrings(17)
-                                                                     '                                                      Weather = JsonStrings(21)
-                                                                     Dim TempWeatherBitmap As Bitmap = New Bitmap(250, 118)
-                                                                     Using WeatherGraphics As Graphics = Graphics.FromImage(TempWeatherBitmap)
-                                                                         If NowTemperature.Length = 1 Then
-                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & NowTemperature), 40, 0, 80, 118)
-                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, 81, 0, 89, 89)
-                                                                         ElseIf NowTemperature.Length = 2 Then
-                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & NowTemperature.Chars(0)), 0, 0, 80, 118)
-                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & NowTemperature.Chars(1)), 80, 0, 80, 118)
-                                                                             WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, 161, 0, 89, 89)
-                                                                         End If
-                                                                     End Using
-                                                                     WeatherBitmap = TempWeatherBitmap
-                                                                     Invoke(Sub()
-                                                                                DrawImage(Me, CreateTimeBitmap(GetTimeString()))
-                                                                            End Sub)
+        AddHandler NowTemperatureClient.DownloadDataCompleted, Sub(sender As Object, e As DownloadDataCompletedEventArgs)
+                                                                   Dim JsonStrings() As String '= "{""desc"":""OK"",""status"":1000,""data"":{""wendu"":""5"",""ganmao"":""将有一次强降温过程，极易发生感冒，请特别注意增加衣服保暖防寒。"",""forecast"":[{""fengxiang"":""东北风"",""fengli"":""4-5级"",""high"":""高温 6℃"",""type"":""阴"",""low"":""低温 0℃"",""date"":""20日星期一""},{""fengxiang"":""无持续风向"",""fengli"":""微风级"",""high"":""高温 0℃"",""type"":""暴雪"",""low"":""低温 -5℃"",""date"":""21日星期二""},{""fengxiang"":""无持续风向"",""fengli"":""微风级"",""high"":""高温 5℃"",""type"":""阴"",""low"":""低温 -5℃"",""date"":""22日星期三""},{""fengxiang"":""无持续风向"",""fengli"":""微风级"",""high"":""高温 7℃"",""type"":""多云"",""low"":""低温 0℃"",""date"":""23日星期四""},{""fengxiang"":""无持续风向"",""fengli"":""微风级"",""high"":""高温 10℃"",""type"":""晴"",""low"":""低温 0℃"",""date"":""24日星期五""}],""yesterday"":{""fl"":""3-4级"",""fx"":""南风"",""high"":""高温 21℃"",""type"":""晴"",""low"":""低温 6℃"",""date"":""19日星期日""},""aqi"":""142"",""city"":""郑州""}}".Split(New Char() {""""}, 39)
+                                                                   '下载的e.Result是经过GZip压缩的，需要解压
+                                                                   Using StreamReceived As IO.Stream = New System.IO.MemoryStream(e.Result)
+                                                                       Using ZipStream As IO.Compression.GZipStream = New IO.Compression.GZipStream(StreamReceived, IO.Compression.CompressionMode.Decompress)
+                                                                           Using DataStreamReader As IO.StreamReader = New IO.StreamReader(ZipStream, System.Text.Encoding.UTF8)
+                                                                               Dim JsonString As String = DataStreamReader.ReadToEnd
+                                                                               'Debug.Print(JsonString)
+                                                                               JsonStrings = Split(JsonString, """", 39)
+                                                                           End Using
+                                                                       End Using
+                                                                   End Using
+                                                                   If JsonStrings(3) <> "OK" Then Exit Sub
+                                                                   NowTemperature = JsonStrings(11)
+                                                                   'JsonStrings(15)：感冒提醒
+                                                                   'JsonStrings(21)：风向
+                                                                   'JsonStrings(25)：风力
+                                                                   HighTemperature = Strings.Mid(JsonStrings(29), 4, JsonStrings(29).Length - 4)
+                                                                   Weather = JsonStrings(33)
+                                                                   LowTemperature = Strings.Mid(JsonStrings(37), 4, JsonStrings(37).Length - 4)
+                                                                   Dim TempWeatherBitmap As Bitmap = New Bitmap(311, 290)
+                                                                   Dim DrawLocationX As Integer = 0
+                                                                   Using WeatherGraphics As Graphics = Graphics.FromImage(TempWeatherBitmap)
+                                                                       Dim WeatherFont As Font, FontSize As Integer = 0, WeatherSize As Size
+                                                                       If Weather.Length < 3 Then
+                                                                           FontSize = 60
+                                                                           WeatherSize = New Size(Weather.Length * 80 + 30, 107)
+                                                                       ElseIf Weather.Length = 3 Then
+                                                                           FontSize = 45
+                                                                           WeatherSize = New Size(200, 85)
+                                                                       ElseIf Weather.Length > 3 Then
+                                                                           FontSize = 32
+                                                                           Weather = Weather.Insert(Weather.Length \ 2, vbCrLf)
+                                                                           WeatherSize = New Size(145, 110)
+                                                                       End If
+                                                                       WeatherFont = New Font(Me.Font.FontFamily, FontSize, FontStyle.Bold)
+                                                                       WeatherGraphics.FillRectangle(New SolidBrush(Color.FromArgb(30, 100, 100, 100)), 0, 0, WeatherSize.Width, WeatherSize.Height)
+                                                                       WeatherGraphics.DrawString(Weather, WeatherFont, Brushes.White, 0, 0)
+                                                                       WeatherFont.Dispose()
 
-                                                                     '                                                  End Sub
-                                                                     'WeatherClient.DownloadStringAsync(New Uri("http://www.weather.com.cn/data/cityinfo/" & DefaultCityKey & ".html"))
-                                                                 End Sub
-        NowTemperatureClient.DownloadStringAsync(New Uri("http://www.weather.com.cn/data/sk/" & DefaultCityKey & ".html"))
+                                                                       '绘制当前气温
+                                                                       If NowTemperature.StartsWith("-") Then
+                                                                           WeatherGraphics.DrawImage(My.Resources.FormResource.Minus, 0, 155, 62, 27)
+                                                                           NowTemperature = NowTemperature.Substring(1)
+                                                                           DrawLocationX += 62
+                                                                       End If
+                                                                       For Index As Byte = 0 To NowTemperature.Length - 1
+                                                                           WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & NowTemperature.Chars(Index)),
+                                                                                                     DrawLocationX, 110, 80, 118)
+                                                                           DrawLocationX += 80
+                                                                       Next
+                                                                       WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, DrawLocationX, 110, 89, 89)
+
+                                                                       '绘制最低气温
+                                                                       DrawLocationX = 0
+                                                                       If LowTemperature.StartsWith("-") Then
+                                                                           WeatherGraphics.DrawImage(My.Resources.FormResource.Minus, 0, 255, 30, 13)
+                                                                           LowTemperature = LowTemperature.Substring(1)
+                                                                           DrawLocationX += 30
+                                                                       End If
+                                                                       For Index As Byte = 0 To LowTemperature.Length - 1
+                                                                           WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & LowTemperature.Chars(Index)),
+                                                                                                     DrawLocationX, 231, 36, 53)
+                                                                           DrawLocationX += 36
+                                                                       Next
+                                                                       WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, DrawLocationX, 231, 36, 36)
+
+                                                                       DrawLocationX += 36
+                                                                       WeatherGraphics.DrawImage(My.Resources.FormResource.Tilde, DrawLocationX, 250, 28, 19)
+                                                                       DrawLocationX += 28
+                                                                       '绘制最高气温
+                                                                       If HighTemperature.StartsWith("-") Then
+                                                                           WeatherGraphics.DrawImage(My.Resources.FormResource.Minus, DrawLocationX, 255, 30, 13)
+                                                                           HighTemperature = HighTemperature.Substring(1)
+                                                                           DrawLocationX += 30
+                                                                       End If
+                                                                       For Index As Byte = 0 To HighTemperature.Length - 1
+                                                                           WeatherGraphics.DrawImage(My.Resources.FormResource.ResourceManager.GetObject("Temperature_" & HighTemperature.Chars(Index)),
+                                                                                                     DrawLocationX, 231, 36, 53)
+                                                                           DrawLocationX += 36
+                                                                       Next
+                                                                       WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, DrawLocationX, 231, 36, 36)
+                                                                   End Using
+                                                                   WeatherBitmap = TempWeatherBitmap
+                                                                   Invoke(Sub()
+                                                                              DrawImage(Me, CreateTimeBitmap(GetTimeString()))
+                                                                          End Sub)
+                                                               End Sub
+        NowTemperatureClient.DownloadDataAsync(New Uri("http://wthrcdn.etouch.cn/weather_mini?citykey=" & DefaultCityKey))
     End Sub
 
 
