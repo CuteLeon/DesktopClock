@@ -157,7 +157,7 @@ Public Class DesktopChildForm
     ''' <summary>
     ''' 更新天气信息
     ''' </summary>
-    Private Sub GetWeather()
+    Public Sub GetWeather()
         Try
             If Not My.Computer.Network.Ping("wthrcdn.etouch.cn") Then Exit Sub
         Catch ex As Exception
