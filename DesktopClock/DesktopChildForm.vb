@@ -165,7 +165,6 @@ Public Class DesktopChildForm
     ''' 更新天气信息
     ''' </summary>
     Public Sub GetWeather()
-        IO.File.WriteAllText("D:\DesktopClock\" & Now.ToString("MM-dd hh-mm-ss") & ".txt", "0" & Now.ToString)
         Try
             If Not My.Computer.Network.Ping("wthrcdn.etouch.cn") Then Exit Sub
         Catch ex As Exception
