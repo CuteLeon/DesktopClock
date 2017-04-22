@@ -12,5 +12,6 @@ Namespace My
             '重复启动时立即刷新天气
             DesktopChildForm.GetWeather()
         End Sub
+
     End Class
 End Namespace

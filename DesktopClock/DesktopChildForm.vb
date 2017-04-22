@@ -31,6 +31,13 @@ Public Class DesktopChildForm
         Me.Top = IntervalDistance.Height
         '监听外部修改系统时间和日期
         AddHandler SystemEvents.TimeChanged, AddressOf UserChangeTime
+
+        '锁定系统时会同时触发 SessionSwitch() 和 PowerModeChanged()，而且每个事件都会在之前和之后运行一次
+        '切换账户时刷新天气
+        AddHandler SystemEvents.SessionSwitch, AddressOf GetWeather
+        '系统挂起或继续时刷新天气
+        'AddHandler SystemEvents.PowerModeChanged, AddressOf GetWeather
+
         '将窗体设置为桌面图标容器的子窗体，以置后显示
         SetParent(Me.Handle, DesktopIconHandle)
         '启动时初始化界面
@@ -158,6 +165,7 @@ Public Class DesktopChildForm
     ''' 更新天气信息
     ''' </summary>
     Public Sub GetWeather()
+        IO.File.WriteAllText("D:\DesktopClock\" & Now.ToString("MM-dd hh-mm-ss") & ".txt", "0" & Now.ToString)
         Try
             If Not My.Computer.Network.Ping("wthrcdn.etouch.cn") Then Exit Sub
         Catch ex As Exception
@@ -256,8 +264,6 @@ Public Class DesktopChildForm
                                                                End Sub
         NowTemperatureClient.DownloadDataAsync(New Uri("http://wthrcdn.etouch.cn/weather_mini?citykey=" & DefaultCityKey))
     End Sub
-
-
 
     ''' <summary>
     ''' 产生时间参数
