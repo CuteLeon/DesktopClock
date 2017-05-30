@@ -180,19 +180,16 @@ Public Class DesktopChildForm
                                                                        Using ZipStream As IO.Compression.GZipStream = New IO.Compression.GZipStream(StreamReceived, IO.Compression.CompressionMode.Decompress)
                                                                            Using DataStreamReader As IO.StreamReader = New IO.StreamReader(ZipStream, System.Text.Encoding.UTF8)
                                                                                Dim JsonString As String = DataStreamReader.ReadToEnd
-                                                                               'Debug.Print(JsonString)
-                                                                               JsonStrings = Split(JsonString, """", 39)
+                                                                               JsonStrings = Split(JsonString, """")
                                                                            End Using
                                                                        End Using
                                                                    End Using
-                                                                   If JsonStrings(3) <> "OK" Then Exit Sub
-                                                                   NowTemperature = JsonStrings(11)
-                                                                   'JsonStrings(15)：感冒提醒
-                                                                   'JsonStrings(21)：风向
-                                                                   'JsonStrings(25)：风力
-                                                                   HighTemperature = Strings.Mid(JsonStrings(29), 4, JsonStrings(29).Length - 4)
-                                                                   Weather = JsonStrings(33)
-                                                                   LowTemperature = Strings.Mid(JsonStrings(37), 4, JsonStrings(37).Length - 4)
+                                                                   If JsonStrings(171) <> "OK" Then Exit Sub
+                                                                   HighTemperature = Strings.Mid(JsonStrings(45), 4, JsonStrings(45).Length - 4) '高温
+                                                                   LowTemperature = Strings.Mid(JsonStrings(53), 4, JsonStrings(53).Length - 4) '低温
+                                                                   Weather = JsonStrings(61) '天气
+                                                                   NowTemperature = JsonStrings(165) '实时温度
+
                                                                    Dim TempWeatherBitmap As Bitmap = New Bitmap(311, 290)
                                                                    Dim DrawLocationX As Integer = 0
                                                                    Using WeatherGraphics As Graphics = Graphics.FromImage(TempWeatherBitmap)
@@ -257,6 +254,7 @@ Public Class DesktopChildForm
                                                                        WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, DrawLocationX, 231, 36, 36)
                                                                    End Using
                                                                    WeatherBitmap = TempWeatherBitmap
+                                                                   WeatherBitmap.Save("D:\1.PNG")
                                                                    Invoke(Sub()
                                                                               DrawImage(Me, CreateTimeBitmap(GetTimeString()))
                                                                           End Sub)
