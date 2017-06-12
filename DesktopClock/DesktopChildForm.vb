@@ -254,7 +254,7 @@ Public Class DesktopChildForm
                                                                        WeatherGraphics.DrawImage(My.Resources.FormResource.Centigrade, DrawLocationX, 231, 36, 36)
                                                                    End Using
                                                                    WeatherBitmap = TempWeatherBitmap
-                                                                   WeatherBitmap.Save("D:\1.PNG")
+
                                                                    Invoke(Sub()
                                                                               DrawImage(Me, CreateTimeBitmap(GetTimeString()))
                                                                           End Sub)
