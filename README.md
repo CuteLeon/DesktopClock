@@ -6,4 +6,4 @@
 如果程序不能置后显示，可能是因为杀毒软件拦截了API，请检查杀毒软件，或启动此程序前关闭杀毒软件
 
 ### 截图
-![image](./生成/截图.png)
+![](https://raw.github.com/CuteLeon/DesktopClock/master/生成/截图.png)
